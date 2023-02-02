@@ -1,0 +1,14 @@
+import { useState } from 'react'
+import reactLogo from './assets/react.svg'
+import './App.css'
+import Welcome from './components/Welcome'
+function App() {
+
+  return (
+    <div className="App">
+      <Welcome />
+    </div>
+  )
+}
+
+export default App
