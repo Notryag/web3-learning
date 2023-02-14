@@ -122,3 +122,35 @@ prisma db push
 prisma studio --port 7777
 
 ```
+
+
+## truffle
+
+简单使用truffle
+
+```shell
+# 初始化truffle 可以
+truffle init 
+# 编译
+truffle compile
+# 本地开发环境
+truffle development
+# 部署到环境
+truffle migrate
+```
+至此合约已经部署到本地测试环境了
+
+```shell
+# 创建文件
+truffle create contract contract_name
+truffle create test test_name
+
+
+```
+
+compile之后可以在terminal中执行代码例如
+```js
+let instance = await NWFT.deployed()
+
+instance.hello()
+```
