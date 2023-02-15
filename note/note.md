@@ -1,4 +1,8 @@
-# hardhat
+# 项目初始化
+
+记录初始化过程和所需依赖常用api
+
+## hardhat
 
 ## 初始化
 
@@ -20,13 +24,13 @@ npx hardhat deploy script/deploy.ts
 npx hardhat node
 ```
 
-# 添加依赖
-
-添加依赖web3相关
+## 添加web3相关依赖
 
 ```shell
 npm install @rainbow-me/rainbowkit wagmi ethers@5
 ```
+
+### rainbow
 
 rainbow 需要添加provider
 
@@ -79,7 +83,9 @@ export const YourApp = () => {
 
 接下来就可以连接到钱包,可以做接下来的工作了
 
-添加prisma ---下一代 nodejs 和 ts的orm 数据库相关
+## prisma -> 数据库相关
+
+>  添加prisma ---下一代 nodejs 和 ts的orm 
 
 ```shell
 npm install prisma --save-dev
@@ -154,3 +160,4 @@ let instance = await NWFT.deployed()
 
 instance.hello()
 ```
+
