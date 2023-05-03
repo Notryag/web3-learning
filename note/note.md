@@ -24,6 +24,13 @@ npx hardhat deploy script/deploy.ts
 npx hardhat node
 ```
 
+## nextjs
+初始化
+
+```shell
+yarn create next-app
+```
+
 ## 添加web3相关依赖
 
 ```shell
