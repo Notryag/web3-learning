@@ -5,16 +5,16 @@ import {
   getDefaultWallets,
   RainbowKitProvider,
 } from '@rainbow-me/rainbowkit';
-import { configureChains, createClient, WagmiConfig } from 'wagmi';
-import { mainnet, polygon, optimism, arbitrum } from 'wagmi/chains';
+import { configureChains, createClient, goerli, WagmiConfig } from 'wagmi';
+import { mainnet, polygon, optimism, arbitrum, localhost } from 'wagmi/chains';
 import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { publicProvider } from 'wagmi/providers/public';
 import { ChakraProvider } from '@chakra-ui/react'
 
 const { chains, provider } = configureChains(
-  [mainnet, polygon, optimism, arbitrum],
+  [mainnet,goerli, polygon, optimism, arbitrum, localhost],
   [
-    alchemyProvider({ apiKey: process.env.ALCHEMY_ID }),
+    alchemyProvider({ apiKey: process.env.ALCHEMY_ID! }),
     publicProvider()
   ]
 );
