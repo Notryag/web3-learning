@@ -10,7 +10,7 @@ import { mainnet, polygon, optimism, arbitrum, localhost } from 'wagmi/chains';
 import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { publicProvider } from 'wagmi/providers/public';
 import { ChakraProvider } from '@chakra-ui/react'
-
+import 'antd/dist/reset.css';
 const { chains, provider } = configureChains(
   [mainnet,goerli, polygon, optimism, arbitrum, localhost],
   [
