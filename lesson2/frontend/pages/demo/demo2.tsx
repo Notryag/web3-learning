@@ -1,12 +1,16 @@
 import { Input, Button } from 'antd'
 import { ethers } from 'ethers'
 import { useState } from 'react'
+import { Collapse } from 'antd';
+
+const { Panel } = Collapse
 
 const WalletGenerator = () => {
     const [wallets, setWallets] = useState<ethers.Wallet[]>([])
     const [walletsCount, setWalletsCount] = useState<number>(1)
     const [loading, setLoading] = useState<boolean>(false)
     const generateWallets = () => {
+        if(walletsCount > 20) return alert('数量不能超过100')
         setLoading(true)
         const wallets = [] as ethers.Wallet[]
         setTimeout(async () => {
@@ -34,7 +38,30 @@ const WalletGenerator = () => {
             <div className='flex justify-center mt-2'>
                 <Button block loading={loading} onClick={generateWallets}>开始生成</Button>
             </div>
+            <div className="display-list">
+                <Collapse defaultActiveKey={['1']} >
+                    {wallets.map((wallet, index) => {
+                        return (
 
+                            <Panel header={`钱包${index + 1}`} key={index}>
+                                <div className="item">
+                                    <span className="item-title">地址</span>
+                                    <Input className="item-content" value={wallet.address}></Input>
+                                </div>
+                                <div className="item overflow-hidden ">
+                                    <span className="item-title">公钥</span>
+                                    <Input className="item-content" value={wallet.publicKey}></Input>
+                                </div>
+                                <div className="item">
+                                    <span className="item-title">私钥</span>
+                                    <Input className="item-content" value={wallet.privateKey}></Input>
+                                </div>
+                            </Panel>
+                        )
+                    })}
+                </Collapse>
+
+            </div>
         </div>
     )
 }

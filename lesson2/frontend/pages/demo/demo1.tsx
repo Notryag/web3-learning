@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react"
 import { ethers } from 'ethers'
 import { Button, Input, Alert } from 'antd'
+import dynamic from "next/dynamic";
 type IWalletCtx = {
     walletProvider: any,
     account: string,
@@ -21,13 +22,18 @@ function sliceAddress(address: string) {
 function Connect() {
     const { walletProvider, setAccount, setBalance, setNetwork, account, network, balance } = useContext(WalletCtx)
     const connectToMetamask = async () => {
-        const accounts = await walletProvider.send('eth_requestAccounts', [])
-        const network = await walletProvider.getNetwork()
-        const balance = await walletProvider.getBalance(await walletProvider.getSigner().getAddress())
+        try {
+            const accounts = await walletProvider.send('eth_requestAccounts', [])
+            const network = await walletProvider.getNetwork()
+            const balance = await walletProvider.getBalance(await walletProvider.getSigner().getAddress())
 
-        setAccount(accounts[0])
-        setNetwork(network.name)
-        setBalance(ethers.utils.formatEther(balance))
+            setAccount(accounts[0])
+            setNetwork(network.name)
+            setBalance(ethers.utils.formatEther(balance))
+        } catch (error) {
+            console.log(error)
+        }
+
     }
 
     const disconnect = () => {
@@ -35,29 +41,36 @@ function Connect() {
         setNetwork('')
         setBalance('')
     }
-
+    useEffect(() => {
+        console.log(account, 'account')
+    }, [])
     if (!account) {
         return (
-            <div>
-                <Button onClick={connectToMetamask}>connect</Button>
+            <div className="flex justify-end">
+                {
+                    walletProvider ? <Button onClick={connectToMetamask}>connect</Button> : 'loading'
+                }
+                
             </div>
         )
-    }
-    return (
-        <>
-            <div className="flex justify-end items-center gap-2 m-2">
-                <span>hello: </span>
-                <span>{sliceAddress(account)}</span>
-                <Button onClick={disconnect}>disconnect</Button>
-            </div>
-            <div className="bg-red-100 p-2 rounded-md">
-                <div>account {account}</div>
-                <div>network {network}</div>
-                <div>balance {balance}</div>
-            </div>
+    } else {
+        return (
+            <>
+                <div className="flex justify-end items-center gap-2 m-2">
+                    <span>hello: </span>
+                    <span>{sliceAddress(account)}</span>
+                    <Button onClick={disconnect}>disconnect</Button>
+                </div>
+                <div className="bg-red-100 p-2 rounded-md">
+                    <div>account {account}</div>
+                    <div>network {network}</div>
+                    <div>balance {balance}</div>
+                </div>
 
-        </>
-    )
+            </>
+        )
+    }
+
 }
 
 const Transfer = () => {
@@ -127,7 +140,12 @@ function Demo1() {
         if (!window.ethereum) {
             return
         } else {
-            setWalletProvider(new ethers.providers.Web3Provider(window.ethereum as any))
+            try {
+                setWalletProvider(new ethers.providers.Web3Provider(window.ethereum as any))
+            } catch (error) {
+                console.log(error);
+
+            }
         }
     }, [])
 
@@ -149,4 +167,4 @@ function Demo1() {
     )
 }
 
-export default Demo1
+export default dynamic(() => Promise.resolve(Demo1), { ssr: false });
