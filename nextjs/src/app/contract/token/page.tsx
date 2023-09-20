@@ -13,9 +13,12 @@ export default function Token() {
     name: '',
     symbol: "",
     decimals: 0,
-    totalSupply: 0,
+    totalSupply: '',
     balance: 0
   })
+
+  const [transferAddress, setTransferAddress] = useState('')
+  const [transferAmount, setTransferAmount] = useState(0)
 
 
   async function connectWallet() {
@@ -65,14 +68,14 @@ export default function Token() {
       const symbol = await contract.symbol()
       const decimals = await contract.decimals()
       const totalSupply = await contract.totalSupply()
-      const balance = await contract.balance(signer.getAddress())
+      const balance = await contract.balanceOf(signer.getAddress())
       console.log(name, symbol, decimals, totalSupply, 'token detail')
       setContract(contract)
       setContractInfo({
         name,
         symbol,
         decimals,
-        totalSupply,
+        totalSupply: totalSupply.toString(),
         balance
       })
     } catch (error) {
@@ -83,9 +86,10 @@ export default function Token() {
 
   async function transfer() {
     if(!contract) return
-
-    const tx = await contract.transfer()
-    
+    console.log(ethers.parseEther("1"))
+    const tx = await contract.transfer(transferAddress, ethers.parseEther("1"))
+    await tx.wait()
+    getDetail()
   }
 
 
@@ -118,9 +122,9 @@ export default function Token() {
               </div>
               <div>
                 <h1>转账</h1>
-                <input type="text" />
-                <input type="text" />
-                <button>转账</button>
+                <input type="text" value={transferAddress} onChange={e => setTransferAddress(e.target.value)} placeholder="wallet address"/>
+                <input type="text" value={transferAmount} onChange={e=> setTransferAmount(Number(e.target.value))} placeholder="token amount"/>
+                <button onClick={transfer}>转账</button>
               </div>
               <div>
                 <h1>授权</h1>
