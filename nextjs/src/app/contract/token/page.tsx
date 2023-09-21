@@ -14,11 +14,13 @@ export default function Token() {
     symbol: "",
     decimals: 0,
     totalSupply: '',
-    balance: 0
+    balance: ''
   })
 
+  const [mintVal, setMintVal] = useState('')
+
   const [transferAddress, setTransferAddress] = useState('')
-  const [transferAmount, setTransferAmount] = useState(0)
+  const [transferAmount, setTransferAmount] = useState('')
 
 
   async function connectWallet() {
@@ -69,14 +71,14 @@ export default function Token() {
       const decimals = await contract.decimals()
       const totalSupply = await contract.totalSupply()
       const balance = await contract.balanceOf(signer.getAddress())
-      console.log(name, symbol, decimals, totalSupply, 'token detail')
+      console.log(name, symbol, decimals, totalSupply, balance, 'token detail')
       setContract(contract)
       setContractInfo({
         name,
         symbol,
         decimals,
-        totalSupply: totalSupply.toString(),
-        balance
+        totalSupply: ethers.formatEther(totalSupply),
+        balance: ethers.formatEther(balance),
       })
     } catch (error) {
       console.log(error)
@@ -87,7 +89,14 @@ export default function Token() {
   async function transfer() {
     if(!contract) return
     console.log(ethers.parseEther("1"))
-    const tx = await contract.transfer(transferAddress, ethers.parseEther("1"))
+    const tx = await contract.transfer(transferAddress, ethers.parseEther(transferAmount))
+    await tx.wait()
+    getDetail()
+  }
+
+  async function mint() {
+    if(!contract) return
+    const tx = await contract.mint(ethers.parseEther(mintVal))
     await tx.wait()
     getDetail()
   }
@@ -113,38 +122,26 @@ export default function Token() {
           {contract ? (
             <>
               <div>contract info</div>
+              <button onClick={getDetail}>refresh</button>
               <div>
                 <span>name: {contractInfo.name}</span>
                 <span>symbol: {contractInfo.symbol}</span>
                 <span>decimals: {contractInfo.decimals}</span>
                 <span>toatalSupply: {contractInfo.totalSupply}</span>
+                <span>balance: {contractInfo.balance}</span>
                 <span></span>
+              </div>
+              <div>
+                <h1>mint</h1>
+                <input type="text" value={mintVal} onChange={e => setMintVal(e.target.value)}/>
+                <button onClick={mint}>mint token</button>
               </div>
               <div>
                 <h1>转账</h1>
                 <input type="text" value={transferAddress} onChange={e => setTransferAddress(e.target.value)} placeholder="wallet address"/>
-                <input type="text" value={transferAmount} onChange={e=> setTransferAmount(Number(e.target.value))} placeholder="token amount"/>
+                <input type="text" value={transferAmount} onChange={e=> setTransferAmount(e.target.value)} placeholder="token amount"/>
                 <button onClick={transfer}>转账</button>
               </div>
-              <div>
-                <h1>授权</h1>
-                <input type="text" />
-                <input type="text" />
-                <button>授权</button>
-              </div>
-              <div>
-                <h1>查询代币授权余额</h1>
-                <input type="text" placeholder="请输入授权人地址" />
-                <input type="text" placeholder="请输入被授权人地址" />
-                <button>查询</button>
-              </div>
-              <div>
-                <h1>通过授权账户进行转账</h1>
-                <input type="text" placeholder="输入已被授权的地址" />
-                <input type="text" placeholder="输入要转账的地址" />
-                <input type="text" placeholder="请输入要授权的代币数量" />
-              </div>
-
             </>
           ) : ''}
         </div>
